@@ -116,9 +116,6 @@ def main():
             else:
                 outputs = model(inputs)
             loss, num_song_tags = MSEloss(outputs, inputs)
-            
-            del inputs # 메모리에 허덕이는 ... 
-            
             # backward
             optimizer.zero_grad()
             loss = loss/num_song_tags
