@@ -48,12 +48,14 @@ class PlayListDataset(Dataset):
 def main():
     data_fname = './data/train.json'
     meta_fname = './data/meta.pkl'
-    result_fname = './res/deepreco'
+    result_fname = './res/model/deepreco'
     batch_size = 32
     drop_prob = 0.8
     lr = 0.005
-    num_epochs = 12
-   
+    num_epochs = 101
+    noise_prob = 0
+    aug_step = 1
+
     # train-val split
     raw_data = load_json(data_fname)
     train, val = train_test_split(np.array(raw_data), train_size=0.8, random_state=128)
@@ -71,14 +73,16 @@ def main():
                             shuffle=True,
                             num_workers=2)
 
+    # check the model
+    model = AutoEncoder()
+    print('model : ')
+    print(model)
+
     # check available gpu
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     print('device : {}'.format(device))
-    
-    # check the model
-    model = AutoEncoder().to(device)
-    print('model : ')
-    print(model)
+   
+    model.to(device)
 
     # set optimizer
     optimizer = optim.SGD(model.parameters(),
@@ -88,7 +92,8 @@ def main():
     scheduler = MultiStepLR(optimizer, milestones=[24, 36, 48, 66, 72], gamma=0.5)
     
     # de-noise
-    # dp = nn.Dropout(p=0)
+    if noise_prob > 0:
+        dp = nn.Dropout(p=noise_prob)
     
     # train
     train_loss_array = []
@@ -104,11 +109,16 @@ def main():
         for pl in tqdm(train_loader):
             pl = pl.view(pl.size(0), -1)
             inputs = Variable(pl.to(device))
-
             # forward
-            outputs = model(inputs)
+            if noise_prob > 0:
+                inputs_noise = dp(inputs) * (1 - noise_prob)
+                outputs = model(inputs_noise)
+            else:
+                outputs = model(inputs)
             loss, num_song_tags = MSEloss(outputs, inputs)
-      
+            
+            del inputs # 메모리에 허덕이는 ... 
+            
             # backward
             optimizer.zero_grad()
             loss = loss/num_song_tags
@@ -116,14 +126,26 @@ def main():
             optimizer.step()
             t_denom += 1.
             total_t_loss += loss.item()
+
+            if aug_step > 0:
+                for t in range(aug_step):
+                    inputs = Variable(outputs.data)
+                    if noise_prob > 0.0:
+                        inputs = dp(inputs)
+                    optimizer.zero_grad()
+                    outputs = model(inputs)
+                    loss, num_song_tags = MSEloss(outputs, inputs)
+                    loss = loss / num_song_tags
+                    loss.backward()
+                    optimizer.step()
+
         elapsed = time.perf_counter() - start
         t_loss = sqrt(total_t_loss / t_denom)
         print('train loss : {:.4f}'.format(t_loss))
-        print('epoch : {}/{}'.format(epoch+1, num_epochs))
         print('elapsed : {:.4f} sec'.format(elapsed))
         train_loss_array.append(t_loss)
-       
-        print('Doing validation ...')
+        
+        # print('Doing validation ...')
         model.eval()
         denom = 0.0
         total_epoch_loss = 0.0
@@ -137,9 +159,10 @@ def main():
         val_loss = sqrt(total_epoch_loss / denom)
         print('val loss : {:.4f}'.format(val_loss))
         val_loss_array.append(val_loss)
-        torch.save(model.state_dict(), '{}_'.format(result_fname)) 
-        with open('{}_{}_loss'.format(result_fname, epoch+1), 'wb') as fp:
-            pkl.dump((train_loss_array, val_loss_array), fp)
+        if epoch % 5 == 0:
+            torch.save(model.state_dict(), '{}_{}'.format(result_fname, epoch+1)) 
+            with open('{}_loss'.format(result_fname), 'wb') as fp:
+                pkl.dump((train_loss_array, val_loss_array), fp)
 
 if __name__ == '__main__':
     from warnings import simplefilter

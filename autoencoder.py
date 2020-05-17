@@ -18,7 +18,7 @@ def MSEloss(inputs, targets, size_average=False):
     return criterion(inputs * mask.float(), targets), Variable(torch.Tensor([1.0])) if size_average else num_ratings
 
 class AutoEncoder(nn.Module):
-    def __init__(self, layer_sizes=[737149, 512, 256, 128], dp_drop_prob=0.8, last_layer_activations=True):
+    def __init__(self, layer_sizes=[737149, 512, 512, 1024], dp_drop_prob=0.8, last_layer_activations=True):
         super(AutoEncoder, self).__init__()
         self._dp_drop_prob = dp_drop_prob
         if dp_drop_prob > 0:
