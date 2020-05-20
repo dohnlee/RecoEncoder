@@ -1,14 +1,9 @@
 # -*- coding:utf-8 -*-
-import os
-import sys
-
-from time import perf_counter as pc
 import pickle as pkl
 from tqdm import tqdm
 
 import torch
 import torch.nn
-from torch.utils.data import Dataset, DataLoader
 
 from arena_util import *
 from autoencoder import AutoEncoder
@@ -78,5 +73,5 @@ if __name__ == '__main__':
     get_answer = GetAnswer(meta_fname = './data/meta.pkl',
                            model_fname = './res/model/deepreco_11',
                            question_fname = './arena_data/questions/val.json',
-                           result_fname = './results/test.json')
+                           result_fname = './results/results.json')
     get_answer.run()
