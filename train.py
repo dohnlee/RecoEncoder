@@ -156,7 +156,7 @@ def main():
         val_loss = sqrt(total_epoch_loss / denom)
         print('val loss : {:.4f}'.format(val_loss))
         val_loss_array.append(val_loss)
-        if epoch % 5 == 0:
+        if epoch % 10 == 0:
             torch.save(model.state_dict(), '{}_{}'.format(result_fname, epoch+1)) 
             with open('{}_loss'.format(result_fname), 'wb') as fp:
                 pkl.dump((train_loss_array, val_loss_array), fp)
