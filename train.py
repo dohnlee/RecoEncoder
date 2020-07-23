@@ -4,7 +4,7 @@ import argparse
 import pickle as pkl
 import torch
 from util import *
-from data import *
+from DAE.data import *
 from DAE.network import *
 from DAE.training_ae import *
 from DAE.training_xg import xgb
