@@ -12,8 +12,8 @@ import torch
 import xgboost
 
 from util import *
-from network import *
-from data import PlayListDataset
+from DAE.data import PlayListDataset
+from DAE.network import *
 
 class Inference(PlayListDataset):
     def __init__(self, meta, device):

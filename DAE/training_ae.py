@@ -12,9 +12,9 @@ from torch.utils.data import Dataset, DataLoader
 from torch.optim.lr_scheduler import MultiStepLR
 
 from util import *
-from network import *
-from infer import Inference
-from data import PlayListDataset
+from DAE.data import PlayListDataset
+from DAE.network import *
+from DAE.infer import Inference
 
 class TrainAE(PlayListDataset):
     def __init__(self, meta, device):

@@ -3,11 +3,11 @@ import random
 import argparse
 import pickle as pkl
 from util import *
-from data import *
-from network import *
-from training_ae import *
-from infer import *
-from training_xg import xgb
+from DAE.data import *
+from DAE.network import *
+from DAE.training_ae import *
+from DAE.infer import *
+from DAE.training_xg import xgb
 
 parser = argparse.ArgumentParser(description='Inference : Task - Playlist Continuation')
 parser.add_argument('--train_fname', metavar='DIR',

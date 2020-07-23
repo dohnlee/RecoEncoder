@@ -5,9 +5,9 @@ import pickle as pkl
 import torch
 from util import *
 from data import *
-from network import *
-from training_ae import *
-from training_xg import xgb
+from DAE.network import *
+from DAE.training_ae import *
+from DAE.training_xg import xgb
 
 # data
 parser = argparse.ArgumentParser(description='Train Candidate Model(AE) and Train Rank Model(XGBoost)')
