@@ -153,7 +153,8 @@ class PreProcess(object):
         for question in tqdm(questions):
             _id = question['id']
             seeds = question['songs']
-            if len(seeds) == 0:
+            seeds = [seed for seed in seeds if seed in song_df]
+            if len(seeds) < 5:
                 continue
             song2score = s_dict[_id]['song2score']
             candis = c_dict[_id]['songs']
@@ -183,8 +184,10 @@ class PreProcess(object):
                     _input.append(label)
                 inputs.append(_input)
                 cnt += 1
-                if cnt % 20000000 == 0:
+                if cnt % 10000000 == 0:
                     inputs = np.array(inputs)
+                    if not os.path.isdir(args.xg_input_fname):
+                        os.makedirs(args.xg_input_fname)
                     write_pickle(inputs, os.path.join(args.xg_input_fname, 'train_{}'.format(check_point)))
                     cnt = 0
                     check_point += 1

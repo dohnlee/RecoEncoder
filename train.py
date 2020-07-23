@@ -36,8 +36,8 @@ learn.add_argument('--mode', type=str, default='ae',
                     help='you can choose ae / xgboost [default=ae]')
 learn.add_argument('--have_meta', default=False,
                     help='exist meta pickle [default=False]')
-learn.add_argument('--validate', default=False,
-                    help='validate dataset and check NDCG [default=False]')
+learn.add_argument('--val_ratio', type=float, default=0.,
+                    help='validation dataset ratio for check NDCG [default=0]')
 learn.add_argument('--lr', type=float, default=0.0005,
                     help='initial learning rate [default: 0.0005]')
 learn.add_argument('--epochs', type=int, default=300,
@@ -79,9 +79,10 @@ def main():
 
     if args.mode != 'xgboost':
         train_ae = TrainAE(meta, args.device)
-        if args.validate: 
+        if args.val_ratio > 0.: 
             random.shuffle(trains)
-            trains, vals = splitter.split_data(trains)
+            trains, vals = splitter.split_data(trains, args.val_ratio)
+            print('validation set')
             vals = splitter.mask_data(vals)
             model = train_ae.main(args, args.ae_fname, trains, vals)
         else:
@@ -91,13 +92,12 @@ def main():
         train_ae = TrainAE(meta, args.device)
         # data split 5/5
         train_c, train_r = splitter.split_data(trains, 0.5)
-        questions, answers = splitter.mask_data(train_r)
+        questions, answers = splitter._mask(train_r, ['songs', 'tags'], [])
         # train ae for ranking model
         model = train_ae.main(args, './res/ae_for_xg', train_c) 
         co_song, song_df = pp.make_codict(questions, meta)
-        write_pickle(co_song, args.codict_fname)
         print('make candidate ... ')
-        candidates, scores = infer.inference(model, questions, 500, 10, with_score=True)
+        candidates, scores = infer.inference(model, questions, 200, 10, with_score=True)
         print('make xg inputs ... ')
         xgb_input = pp.make_xgboost_input(args,
                 questions,

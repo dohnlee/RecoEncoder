@@ -27,6 +27,7 @@ class TrainAE(PlayListDataset):
         self.token_length = len(self.token2idx)
         self.idx2song = {idx:song for song, idx in self.song2idx.items()}
         self.idx2tag = {idx:tag for tag, idx in self.tag2idx.items()}
+        self.infer = Inference(meta, device)
         if device == 'gpu':
             self.device = torch.device('cuda')
         else:
@@ -38,9 +39,7 @@ class TrainAE(PlayListDataset):
         # trains = random.sample(trains, 1000)
         if vals is not None:
             questions, answers = vals
-            questions, answers = zip(*random.sample(list(zip(questions, answers)), 10000))
             ndcg = Ndcg(answers)
-            infer = Inference(self.meta, self.device)
 
         train_dataset = PlayListDataset(dataset=trains,
                 song2idx=self.song2idx,
@@ -125,7 +124,7 @@ class TrainAE(PlayListDataset):
             if vals is not None:
                 if epoch % 5 == 0:
                     print('calculate NDCG')
-                    results = infer.inference(model, questions, num_songs=100, num_tags=10)
+                    results = self.infer.inference(model, questions, num_songs=100, num_tags=10)
                     eval_ndcg = ndcg.main(results)
                     ndcg_array.append(eval_ndcg)
                     print('music ndcg : {:.4f}, tag ndcg : {:.4f}, score : {:.4f}'.format(*eval_ndcg))
