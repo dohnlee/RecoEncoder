@@ -11,7 +11,23 @@ https://arena.kakao.com/c/7
 1. Candidate Model - Denoising AutoEncoder
 2. Ranking Model - xgboost
 
+## Candidate Model - Denoising AutoEncoder
+<img src="./images/DAE.png" width="60%" height="60%">
+
+- 추천을 하기 위한 seed song/tag 가 없는 경우 _cold start problem_ 을 해결하기 위해 playlist title을 tokenize한 후에 input으로 사용했습니다.
+- 오토인코더의 성능을 높이기 위해, 일부 곡이나 태그들을 가리고 복원하는 과정에서 맞추도록 Denoising AutoEncoder를 사용하였습니다.
+
+__Reference__
+- [Training Deep AutoEncoders for Collaborative Filtering](https://arxiv.org/abs/1708.01715)
+- [MMCF: Multimodal Collaborative Filtering for Automatic Playlist Continuation](https://dl.acm.org/doi/10.1145/3267471.3267482)
+
+## Ranking Model - Xgboost
+
+
 ## Requirement
+```
+
+```
 
 ## Dataset Format
 https://arena.kakao.com/c/7/data
