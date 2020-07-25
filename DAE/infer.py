@@ -6,7 +6,6 @@ import json
 import pickle as pkl
 from tqdm import tqdm
 
-import pandas as pd
 import numpy as np
 import torch
 import xgboost
@@ -79,13 +78,13 @@ class Inference(PlayListDataset):
         c_dict = {c['id']:c for c in candidates}
         s_dict = {score['id']:score for score in scores}
         
-        for question in questions:
-            songs = [song for song in question['songs'] if song in self.song2idx]
-            for i in range(len(songs)):
-                seed = songs[i]
-                for song in songs[i:]:
-                    co_song[song][seed] += 1
-                    co_song[seed][song] += 1
+#        for question in questions:
+#            songs = [song for song in question['songs'] if song in self.song2idx]
+#            for i in range(len(songs)):
+#                seed = songs[i]
+#                for song in songs[i:]:
+#                    co_song[song][seed] += 1
+#                    co_song[seed][song] += 1
 
         for question in tqdm(questions):
             _id = question['id']

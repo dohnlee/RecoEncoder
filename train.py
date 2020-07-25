@@ -91,13 +91,10 @@ def main():
     if args.mode == 'xgboost':
         train_ae = TrainAE(meta, args.device)
         # data split 5/5
-        train_c, train_r = splitter.split_data(trains, 0.8)
-        questions, answers = splitter.mask_data(train_r)
+        train_c, train_r = splitter.split_data(trains, 0.5)
+        questions, answers = splitter._mask(train_r, ['songs', 'tags'], [])
         # train ae for ranking model
         model = train_ae.main(args, './res/ae_for_xg', train_c) 
-        sys.exit('make 80/20 model')
-        model = AutoEncoder().cuda()
-        model.load_state_dict(torch.load('./res/ae_for_xg'))
         co_song, song_df = pp.make_codict(train_c, questions, meta)
         print('make candidate ... ')
         candidates, scores = infer.inference(model, questions, 200, 10, with_score=True)

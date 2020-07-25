@@ -79,9 +79,9 @@ def main():
         results = infer.inference(model, questions, 100, 10)
         write_json(results, args.results_fname)
     else:
-        co_song, song_df = pp.make_codict(trains, meta)
+        co_song, song_df = pp.make_codict(trains, questions, meta)
         print('make candidate ... ')
-        candidates, scores = infer.inference(model, questions, 2000, 10, with_score=True)
+        candidates, scores = infer.inference(model, questions, 200, 10, with_score=True)
         print('Re-ranking ... ')
         results = infer.ranking(args, questions, candidates, scores, song_df, co_song)
         write_json(results, args.results_fname)

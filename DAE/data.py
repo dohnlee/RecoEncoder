@@ -6,7 +6,6 @@ import random
 from collections import defaultdict
 
 import numpy as np
-import pandas as pd
 import torch
 from torch.utils.data import Dataset
 from tqdm import tqdm
@@ -129,7 +128,6 @@ class PreProcess(object):
                 for song in songs:
                     song_df[song]+=1
 
-            co_song = {song:defaultdict(int) for song in song2idx}
             for i in tqdm(range(len(data))):
                 songs = [song for song in data[i]['songs'] if song in song2idx]
                 for j in range(len(songs)):
