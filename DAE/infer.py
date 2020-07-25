@@ -78,10 +78,20 @@ class Inference(PlayListDataset):
         results = []
         c_dict = {c['id']:c for c in candidates}
         s_dict = {score['id']:score for score in scores}
+        
+        for question in questions:
+            songs = [song for song in question['songs'] if song in self.song2idx]
+            for i in range(len(songs)):
+                seed = songs[i]
+                for song in songs[i:]:
+                    co_song[song][seed] += 1
+                    co_song[seed][song] += 1
+
         for question in tqdm(questions):
             _id = question['id']
             seeds = question['songs']
-            if len(seeds) == 0:
+            seeds = [seed for seed in seeds if seed in self.song2idx]
+            if len(seeds) < 3:
                 results.append({
                     "id":_id,
                     "songs" : c_dict[_id]['songs'][:100],

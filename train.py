@@ -77,7 +77,7 @@ def main():
     if args.mode not in {'ae', 'xgboost'}:
         sys.exit('Error : check mode --mode ae/xgboost')
 
-    if args.mode != 'xgboost':
+    if args.mode == 'ae':
         train_ae = TrainAE(meta, args.device)
         if args.val_ratio > 0.: 
             random.shuffle(trains)
@@ -88,14 +88,17 @@ def main():
         else:
             model = train_ae.main(args, args.ae_fname, trains)
 
-    if args.mode != 'ae':
+    if args.mode == 'xgboost':
         train_ae = TrainAE(meta, args.device)
         # data split 5/5
-        train_c, train_r = splitter.split_data(trains, 0.5)
-        questions, answers = splitter._mask(train_r, ['songs', 'tags'], [])
+        train_c, train_r = splitter.split_data(trains, 0.8)
+        questions, answers = splitter.mask_data(train_r)
         # train ae for ranking model
         model = train_ae.main(args, './res/ae_for_xg', train_c) 
-        co_song, song_df = pp.make_codict(questions, meta)
+        sys.exit('make 80/20 model')
+        model = AutoEncoder().cuda()
+        model.load_state_dict(torch.load('./res/ae_for_xg'))
+        co_song, song_df = pp.make_codict(train_c, questions, meta)
         print('make candidate ... ')
         candidates, scores = infer.inference(model, questions, 200, 10, with_score=True)
         print('make xg inputs ... ')
@@ -110,4 +113,6 @@ def main():
     print('Train End')
 
 if __name__ == '__main__':
-   main() 
+    from warnings import simplefilter
+    simplefilter(action='ignore', category=UserWarning)
+    main() 

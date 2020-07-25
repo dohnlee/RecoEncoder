@@ -117,25 +117,27 @@ class PreProcess(object):
 
         return data
     
-    def make_codict(self, data, meta):
+    def make_codict(self, trains, questions, meta):
         print('make codict ... ')
         song2idx = meta['song2idx']
-        co_song = defaultdict(dict)
         song_df = defaultdict(int)
-        for i in range(len(data)):
-            songs = [song for song in data[i]['songs'] if song in song2idx]
-            for song in songs:
-                song_df[song]+=1
-        song_df = dict(song_df)
         co_song = {song:defaultdict(int) for song in song2idx}
-        for i in tqdm(range(len(data))):
-            songs = [song for song in data[i]['songs'] if song in song2idx]
-            for i in range(len(songs)):
-                seed = songs[i]
-                for song in songs[i:]:
-                    if song != seed:
-                        co_song[song][seed] += 1
-                        co_song[seed][song] += 1
+        
+        for data in [trains, questions]:
+            for i in range(len(data)):
+                songs = [song for song in data[i]['songs'] if song in song2idx]
+                for song in songs:
+                    song_df[song]+=1
+
+            co_song = {song:defaultdict(int) for song in song2idx}
+            for i in tqdm(range(len(data))):
+                songs = [song for song in data[i]['songs'] if song in song2idx]
+                for j in range(len(songs)):
+                    seed = songs[j]
+                    for song in songs[j:]:
+                        if song != seed:
+                            co_song[song][seed] += 1
+                            co_song[seed][song] += 1
             
         return dict(co_song), song_df
     
@@ -153,8 +155,8 @@ class PreProcess(object):
         for question in tqdm(questions):
             _id = question['id']
             seeds = question['songs']
-            seeds = [seed for seed in seeds if seed in song_df]
-            if len(seeds) < 5:
+            seeds = [seed for seed in seeds if seed in co_song]
+            if len(seeds) == 0:
                 continue
             song2score = s_dict[_id]['song2score']
             candis = c_dict[_id]['songs']
