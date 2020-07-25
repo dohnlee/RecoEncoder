@@ -1,5 +1,5 @@
 # RecoEncoder
-AutoEncoder for Recommendation
+AutoEncoder and XGboost for Automatic Playlist Continuation
 
 written by g-lab
 
@@ -10,6 +10,11 @@ https://arena.kakao.com/c/7
 모델은 두가지로 구성되어집니다. 
 1. Candidate Model - Denoising AutoEncoder
 2. Ranking Model - xgboost
+
+Score
+| Score | Song NDCG | Tag NDCG |
+| :----: | :----: | :----: |
+| 0.308104 | 0.276062 | 0.489678 |
 
 ## Candidate Model - Denoising AutoEncoder
 <img src="./images/DAE.png" width="60%" height="60%">
