@@ -23,6 +23,11 @@ __Reference__
 
 ## Ranking Model - Xgboost
 
+- 오토인코더 결과에서 candidate를 뽑아서 성능을 높이기 위해 xgboost를 활용했습니다.
+- candidate 곡과 seed곡 사이의 연관성을 고려하여 함께 등장한 횟수(cooccurence)와 candidate 곡의 rating을 feature로 활용하고 candidate곡이 실제 answer에 있는지를 target으로 설정하였습니다.
+
+__Reference__
+- [A hybrid two-stage recommender system for automatic playlist continuation](https://dl.acm.org/doi/10.1145/3267471.3267488)
 
 ## Requirement
 
@@ -72,12 +77,11 @@ https://arena.kakao.com/c/7/data
 ```
 ## Train
 `python train.py -h` 을 실행하면 다음과 같이 train에 필요한 옵션들을 확인할 수 있습니다.
-
 ```
 usage: train.py [-h] [--train_fname DIR] [--meta_fname DIR]
                 [--xg_input_fname DIR] [--codict_fname DIR] [--ae_fname DIR]
                 [--xg_fname DIR] [--mode MODE] [--have_meta HAVE_META]
-                [--validate VALIDATE] [--lr LR] [--epochs EPOCHS]
+                [--val_ratio VAL_RATIO] [--lr LR] [--epochs EPOCHS]
                 [--batch_size BATCH_SIZE] [--drop_prob DROP_PROB]
                 [--noise_prob NOISE_PROB] [--milestones MILESTONES]
                 [--gamma GAMMA] [--check_point CHECK_POINT] [--device DEVICE]
@@ -102,7 +106,8 @@ Learning options:
   --mode MODE           you can choose ae / xgboost [default=ae]
   --have_meta HAVE_META
                         exist meta pickle [default=False]
-  --validate VALIDATE   validate dataset and check NDCG [default=False]
+  --val_ratio VAL_RATIO
+                        validation dataset ratio for check NDCG [default=0]
   --lr LR               initial learning rate [default: 0.0005]
   --epochs EPOCHS       number of epochs for training [default: 300]
   --batch_size BATCH_SIZE
@@ -119,10 +124,16 @@ Learning options:
                         chek point fot save model [default:50]
   --device DEVICE       cpu or gpu
 ```
+
+### AE 학습 (Default option)
+`python train.py`를 통해서 학습할 수 있습니다.
+`val_ratio`를 설정하여 val NDCG를 체크할 수 있습니다.
+
+### XGBoost 학습
+`python train.py --mode xgboost`를 통해서 학습할 수 있습니다.
+
 ## Inference
-`train.py`와 마찮가지로 `python inference.py -h` 을 실행하면 다음과 같이 inference에 필요한 옵션들을 확인할 수 있습니다.
-
-
+`train.py`와 마찬가지로 `python inference.py -h` 을 실행하면 다음과 같이 inference에 필요한 옵션들을 확인할 수 있습니다.
 ```
 usage: inference.py [-h] [--train_fname DIR] [--infer_fname DIR]
                     [--results_fname DIR] [--meta_fname DIR]
@@ -155,4 +166,10 @@ Inferencing options:
   --have_meta HAVE_META
                         exist meta pickle [default=True]
   --device DEVICE       cpu or gpu
+
 ```
+### Candi + Re-ranking
+`python inference.py` 를 통해 결과를 확인할 수 있습니다.
+
+### AE
+`python inference.py --mode ae`를 통해 re-ranking하지 않은 결과를 확인할 수 있습니다. 
