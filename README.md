@@ -76,6 +76,8 @@ https://arena.kakao.com/c/7/data
  'updt_date': '2013-12-19 18:36:19.000'}
 ```
 ## Train
+__data__ 폴더에 학습할 데이터 `train.json`을 넣어주어야 합니다.
+
 `python train.py -h` 을 실행하면 다음과 같이 train에 필요한 옵션들을 확인할 수 있습니다.
 ```
 usage: train.py [-h] [--train_fname DIR] [--meta_fname DIR]
@@ -133,6 +135,8 @@ Learning options:
 `python train.py --mode xgboost`를 통해서 학습할 수 있습니다.
 
 ## Inference
+__data__ 폴더에 학습한 데이터 `train.json`와 inference할 데이터 `test.json` or `val.json`을 넣어주어야 합니다.
+
 `train.py`와 마찬가지로 `python inference.py -h` 을 실행하면 다음과 같이 inference에 필요한 옵션들을 확인할 수 있습니다.
 ```
 usage: inference.py [-h] [--train_fname DIR] [--infer_fname DIR]
@@ -169,7 +173,7 @@ Inferencing options:
 
 ```
 ### Candi + Re-ranking
-`python inference.py` 를 통해 결과를 확인할 수 있습니다.
+`python inference.py --infer_fname ./data/test.json` 를 통해 결과를 확인할 수 있습니다.
 
 ### AE
-`python inference.py --mode ae`를 통해 re-ranking하지 않은 결과를 확인할 수 있습니다. 
+`python inference.py --mode ae --infer_fname ./data/test.json`를 통해 re-ranking하지 않은 결과를 확인할 수 있습니다. 
