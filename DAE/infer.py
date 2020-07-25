@@ -53,11 +53,9 @@ class Inference(PlayListDataset):
                 
                 if with_score:
                     song2score = {self.idx2song[idx]:song_rating[idx] for idx in song_idx}
-#                    tag2score = {self.idx2tag[idx]:tag_rating[idx] for idx in tag_idx}
                     scores.append({
                             "id":question['id'],
                             "song2score":song2score
-#                            "tag2score":tag2score
                     })
                 songs = [self.idx2song[idx] for idx in song_idx]
                 tags = [self.idx2tag[idx] for idx in tag_idx]
@@ -78,14 +76,6 @@ class Inference(PlayListDataset):
         c_dict = {c['id']:c for c in candidates}
         s_dict = {score['id']:score for score in scores}
         
-#        for question in questions:
-#            songs = [song for song in question['songs'] if song in self.song2idx]
-#            for i in range(len(songs)):
-#                seed = songs[i]
-#                for song in songs[i:]:
-#                    co_song[song][seed] += 1
-#                    co_song[seed][song] += 1
-
         for question in tqdm(questions):
             _id = question['id']
             seeds = question['songs']

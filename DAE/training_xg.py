@@ -53,9 +53,3 @@ def xgb(args):
 
     write_pickle(model, args.xg_fname)
 
-
-if __name__ == '__main__':
-    xgb(
-        xgb_input_fname='./res/feature/train/train_1_song_xgb_input.pkl',
-        result_fname='./res/xgb/song_xgb_model_1.pkl'
-    )
