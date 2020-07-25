@@ -25,9 +25,22 @@ __Reference__
 
 
 ## Requirement
-```
 
-```
+다음과 같은 환경에서 실험을 진행하였습니다.
+
+| 디바이스 / 패키지 | 정보 / 버전 |
+| ---- | :----: |
+| **CPU** | Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz |
+| **GPU** | GeForce GTX 1080Ti |
+| **OS** | Ubuntu 16.04.6 |
+| **CUDA** | 10.0, V10.0.130 |
+| **python** | 3.7.4 |
+| **numpy** | 1.17.2 |
+| **torch** | 1.5.1+cu101 |
+| **xgboost** | 1.1.1 |
+| **khaiii** | 0.4 |
+| **tqdm** | 4.36.1 |
+
 
 ## Dataset Format
 https://arena.kakao.com/c/7/data
