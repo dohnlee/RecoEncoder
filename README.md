@@ -11,7 +11,7 @@ https://arena.kakao.com/c/7
 1. Candidate Model - Denoising AutoEncoder
 2. Ranking Model - xgboost
 
-Score
+Score(Validation)
 | Score | Song NDCG | Tag NDCG |
 | :----: | :----: | :----: |
 | 0.308104 | 0.276062 | 0.489678 |
