@@ -140,6 +140,11 @@ Learning options:
 `python train.py --mode xgboost`를 통해서 학습할 수 있습니다.
 
 ## Inference
+pretrained 된 모델은 다음 링크를 통해 다운 받을 수 있습니다.
+https://drive.google.com/drive/folders/1fWGiqdr4eCCrGdUrjlgFY3w4qw423itq?usp=sharing
+
+pretrained 된 `dae`와 `xg`를 __res__ 폴더에 넣어주어야 합니다.
+
 __data__ 폴더에 학습한 데이터 `train.json`와 inference할 데이터 `test.json` or `val.json`을 넣어주어야 합니다.
 
 `train.py`와 마찬가지로 `python inference.py -h` 을 실행하면 다음과 같이 inference에 필요한 옵션들을 확인할 수 있습니다.
