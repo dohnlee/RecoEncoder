@@ -138,7 +138,7 @@ class TrainAE(PlayListDataset):
             if epoch % args.check_point == 0:
                 torch.save(model.state_dict(), '{}_dict_{}'.format(results_fname, epoch)) 
                 if vals is not None:
-                    pickling((train_loss_array, ndcg_array), '{}_loss'.format(results_fname))
+                    write_pickle((train_loss_array, ndcg_array), '{}_loss'.format(results_fname))
             
         torch.save(model.state_dict(), results_fname)
         return model
